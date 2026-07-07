@@ -12,22 +12,18 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, FilterIcon } from "@hugeicons/core-free-icons";
+import { Search01Icon, FilterIcon, ClinicIcon, Calendar01Icon } from "@hugeicons/core-free-icons";
 import { todayTasks } from "@/mock-data/dashboard";
 import { useDashboardStore } from "@/store/dashboard-store";
 import { cn } from "@/lib/utils";
 
-const projectColorMap: Record<string, string> = {
-  blue: "rounded-lg border border-border bg-muted/50 text-foreground",
-  violet: "rounded-lg border border-border bg-muted/50 text-foreground",
-  cyan: "rounded-lg border border-border bg-muted/50 text-foreground",
-  pink: "rounded-lg border border-border bg-muted/50 text-foreground",
-  amber: "rounded-lg border border-border bg-muted/50 text-foreground",
+const typeMeta: Record<
+  string,
+  { label: string; icon: typeof ClinicIcon; color: string }
+> = {
+  consulta: { label: "Consulta", icon: ClinicIcon, color: "text-cyan-500" },
+  calendario: { label: "Calendário", icon: Calendar01Icon, color: "text-orange-500" },
 };
-
-const uniqueProjects = Array.from(
-  new Map(todayTasks.map((t) => [t.projectId, { id: t.projectId, name: t.projectName }])).values()
-);
 
 export function TodaysTasks() {
   const {
@@ -45,21 +41,22 @@ export function TodaysTasks() {
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(q) ||
-          t.projectName.toLowerCase().includes(q)
+          (t.patient?.toLowerCase().includes(q) ?? false)
       );
     }
     if (tasksProjectFilter.length > 0) {
-      result = result.filter((t) => tasksProjectFilter.includes(t.projectId));
+      result = result.filter((t) => tasksProjectFilter.includes(t.type));
     }
     return result;
   }, [tasksSearchQuery, tasksProjectFilter]);
 
   const hasTaskFilters = tasksProjectFilter.length > 0;
+  const uniqueTypes = Array.from(new Set(todayTasks.map((t) => t.type)));
 
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 border-b">
-        <h3 className="font-medium text-base">Tarefas de Hoje</h3>
+        <h3 className="font-medium text-base">Hoje</h3>
         <div className="flex items-center gap-2">
           <div className="relative">
             <HugeiconsIcon icon={Search01Icon} className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -87,16 +84,16 @@ export function TodaysTasks() {
                 checked={tasksProjectFilter.length === 0}
                 onCheckedChange={() => setTasksProjectFilter([])}
               >
-                Todos os projetos
+                Todos
               </DropdownMenuCheckboxItem>
               <DropdownMenuSeparator />
-              {uniqueProjects.map((proj) => (
+              {uniqueTypes.map((type) => (
                 <DropdownMenuCheckboxItem
-                  key={proj.id}
-                  checked={tasksProjectFilter.includes(proj.id)}
-                  onCheckedChange={() => toggleTasksProjectFilter(proj.id)}
+                  key={type}
+                  checked={tasksProjectFilter.includes(type)}
+                  onCheckedChange={() => toggleTasksProjectFilter(type)}
                 >
-                  {proj.name}
+                  {typeMeta[type]?.label ?? type}
                 </DropdownMenuCheckboxItem>
               ))}
               {hasTaskFilters && (
@@ -114,28 +111,29 @@ export function TodaysTasks() {
       <div className="divide-y">
         {filteredTasks.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            Nenhuma tarefa corresponde à sua busca.
+            Nenhum item corresponde à sua busca.
           </div>
         ) : (
-          filteredTasks.map((task) => (
-            <div
-              key={task.id}
-              className="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
-            >
-              <span className="font-medium text-sm">{task.name}</span>
+          filteredTasks.map((task) => {
+            const meta = typeMeta[task.type] ?? typeMeta.consulta;
+            return (
               <div
-                className={cn(
-                  "inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium",
-                  projectColorMap[task.projectColor] ?? projectColorMap.blue
-                )}
+                key={task.id}
+                className="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
               >
-                {task.projectName}
+                <HugeiconsIcon icon={meta.icon} className={cn("size-4 shrink-0", meta.color)} />
+                <span className="font-medium text-sm">{task.name}</span>
+                {task.patient && (
+                  <span className="rounded-lg border border-border bg-muted/50 px-2 py-1 text-xs font-medium text-foreground">
+                    {task.patient}
+                  </span>
+                )}
+                <span className="text-xs text-muted-foreground ml-auto tabular-nums">
+                  {task.time}
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground ml-auto">
-                Prazo: {task.dueDate}
-              </span>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

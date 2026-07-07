@@ -16,14 +16,11 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MoreVerticalIcon } from "@hugeicons/core-free-icons";
 import {
-  performanceScore,
-  performanceChange,
   performanceChartData,
 } from "@/mock-data/dashboard";
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
   Bar,
@@ -37,7 +34,6 @@ import {
 } from "recharts";
 
 type ChartType = "bar" | "line";
-type Period = "7d" | "30d";
 
 const barColors = [
   "var(--muted-foreground)",
@@ -49,31 +45,73 @@ const barColors = [
 ];
 
 const chartConfig = {
-  value: {
-    label: "Desempenho",
-  },
+  atual: { label: "Esta semana" },
+  anterior: { label: "Semana passada" },
 };
+
+type DataPoint = (typeof performanceChartData)[number];
+
+function ComparisonTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { payload: DataPoint }[];
+}) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0].payload;
+  const diff = point.atual - point.anterior;
+  return (
+    <div className="border-border/50 bg-background rounded-lg border px-2.5 py-1.5 text-xs shadow-xl min-w-36">
+      <div className="font-medium mb-1">{point.day}</div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground">Esta semana</span>
+        <span className="font-mono font-medium tabular-nums">{point.atual}</span>
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground">Semana passada</span>
+        <span className="font-mono tabular-nums text-muted-foreground">{point.anterior}</span>
+      </div>
+      <div className="flex items-center justify-between gap-3 border-t border-border mt-1 pt-1">
+        <span className="text-muted-foreground">Diferença</span>
+        <span
+          className={
+            diff >= 0
+              ? "font-mono font-medium tabular-nums text-emerald-600 dark:text-emerald-400"
+              : "font-mono font-medium tabular-nums text-rose-600 dark:text-rose-400"
+          }
+        >
+          {diff >= 0 ? "+" : ""}
+          {diff}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function PerformanceChart() {
   const [chartType, setChartType] = useState<ChartType>("bar");
-  const [period, setPeriod] = useState<Period>("7d");
   const [showGrid, setShowGrid] = useState(true);
   const [smoothCurve, setSmoothCurve] = useState(true);
 
   const resetToDefault = () => {
     setChartType("bar");
-    setPeriod("7d");
     setShowGrid(true);
     setSmoothCurve(true);
   };
 
-  // Pour l'instant, on garde les mêmes données quel que soit period
   const data = performanceChartData;
+  const totalAtual = data.reduce((acc, d) => acc + d.atual, 0);
+  const totalAnterior = data.reduce((acc, d) => acc + d.anterior, 0);
+  const change =
+    totalAnterior === 0
+      ? 0
+      : Math.round(((totalAtual - totalAnterior) / totalAnterior) * 100);
 
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 border-b">
-        <h3 className="font-medium text-base">Desempenho</h3>
+        <h3 className="font-medium text-base">Atendimentos</h3>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -91,17 +129,6 @@ export function PerformanceChart() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setChartType("line")}>
                   Gráfico de Linhas {chartType === "line" && "✓"}
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Período de Tempo</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem onClick={() => setPeriod("7d")}>
-                  Últimos 7 dias {period === "7d" && "✓"}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setPeriod("30d")}>
-                  Últimos 30 dias {period === "30d" && "✓"}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
@@ -128,9 +155,19 @@ export function PerformanceChart() {
       </div>
       <div className="p-4">
         <div className="flex items-baseline gap-2 mb-4">
-          <span className="text-3xl font-semibold">{performanceScore}%</span>
+          <span className="text-3xl font-semibold tabular-nums">{totalAtual}</span>
           <span className="text-sm text-muted-foreground">
-            +{performanceChange}% vs semana passada
+            atendimentos esta semana
+          </span>
+          <span
+            className={
+              change >= 0
+                ? "text-sm text-emerald-600 dark:text-emerald-400"
+                : "text-sm text-rose-600 dark:text-rose-400"
+            }
+          >
+            {change >= 0 ? "+" : ""}
+            {change}% vs semana passada
           </span>
         </div>
         <ChartContainer config={chartConfig} className="h-[175px] w-full">
@@ -152,9 +189,9 @@ export function PerformanceChart() {
                 axisLine={false}
                 tick={{ fontSize: 11 }}
               />
-              <YAxis hide domain={[0, 100]} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="value" radius={[4, 4, 0, 0]} strokeWidth={0}>
+              <YAxis hide />
+              <ChartTooltip content={<ComparisonTooltip />} />
+              <Bar dataKey="atual" radius={[4, 4, 0, 0]} strokeWidth={0}>
                 {data.map((entry, index) => (
                   <Cell key={entry.day} fill={barColors[index]} />
                 ))}
@@ -178,11 +215,11 @@ export function PerformanceChart() {
                 axisLine={false}
                 tick={{ fontSize: 11 }}
               />
-              <YAxis hide domain={[0, 100]} />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              <YAxis hide />
+              <ChartTooltip content={<ComparisonTooltip />} />
               <Line
                 type={smoothCurve ? "monotone" : "linear"}
-                dataKey="value"
+                dataKey="atual"
                 stroke="var(--foreground)"
                 strokeWidth={2}
                 dot={false}
@@ -200,4 +237,3 @@ export function PerformanceChart() {
     </div>
   );
 }
-

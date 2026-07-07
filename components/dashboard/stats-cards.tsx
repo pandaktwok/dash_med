@@ -3,36 +3,36 @@
 import { dashboardStats } from "@/mock-data/dashboard";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Folder01Icon,
-  Task01Icon,
-  ViewIcon,
-  Tick01Icon,
+  ClinicIcon,
+  Calendar03Icon,
+  WhatsappIcon,
+  CalendarCheckIn01Icon,
 } from "@hugeicons/core-free-icons";
 
 const stats = [
   {
-    title: "Total de Projetos",
-    value: dashboardStats.totalProjects.value,
-    change: dashboardStats.totalProjects.change,
-    icon: Folder01Icon,
+    title: "Consultas Hoje",
+    value: dashboardStats.consultasHoje.value,
+    change: dashboardStats.consultasHoje.change,
+    icon: ClinicIcon,
   },
   {
-    title: "Total de Tarefas",
-    value: dashboardStats.totalTasks.value,
-    change: dashboardStats.totalTasks.change,
-    icon: Task01Icon,
+    title: "Consultas/Mês",
+    value: dashboardStats.consultasMes.value,
+    change: dashboardStats.consultasMes.change,
+    icon: Calendar03Icon,
   },
   {
-    title: "Em Revisão",
-    value: dashboardStats.inReviews.value,
-    change: dashboardStats.inReviews.change,
-    icon: ViewIcon,
+    title: "Atendimento Whats",
+    value: dashboardStats.atendimentoWhats.value,
+    change: dashboardStats.atendimentoWhats.change,
+    icon: WhatsappIcon,
   },
   {
-    title: "Tarefas Concluídas",
-    value: dashboardStats.completedTasks.value,
-    change: dashboardStats.completedTasks.change,
-    icon: Tick01Icon,
+    title: "Próximo Mês",
+    value: dashboardStats.proximoMes.value,
+    change: dashboardStats.proximoMes.change,
+    icon: CalendarCheckIn01Icon,
   },
 ];
 

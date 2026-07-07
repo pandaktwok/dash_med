@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useDashboardStore } from "@/store/dashboard-store";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,16 +26,11 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Search01Icon,
-  SparklesIcon,
-  Layers01Icon,
-  Notification01Icon,
   DashboardSquare01Icon,
-  Mail01Icon,
-  Task01Icon,
+  WhatsappIcon,
   Calendar01Icon,
-  ChartLineData01Icon,
-  HelpCircleIcon,
+  Wallet01Icon,
+  UserGroupIcon,
   Settings01Icon,
   ArrowDown01Icon,
   Tick01Icon,
@@ -43,22 +39,18 @@ import {
 } from "@hugeicons/core-free-icons";
 
 const navItems = [
-  { title: "Buscar", icon: Search01Icon, shortcut: "/", iconColor: "text-muted-foreground" },
-  { title: "Taskplus IA", icon: SparklesIcon, iconColor: "text-violet-500" },
-  { title: "Modelos", icon: Layers01Icon, iconColor: "text-blue-500" },
-  { title: "Notificações", icon: Notification01Icon, iconColor: "text-amber-500" },
-  { title: "Painel", icon: DashboardSquare01Icon, isActive: true, iconColor: "text-primary" },
-  { title: "Caixa de Entrada", icon: Mail01Icon, iconColor: "text-cyan-500" },
-  { title: "Projetos", icon: Task01Icon, iconColor: "text-emerald-500" },
-  { title: "Calendário", icon: Calendar01Icon, iconColor: "text-orange-500" },
-  { title: "Relatórios", icon: ChartLineData01Icon, iconColor: "text-rose-500" },
-  { title: "Central de Ajuda", icon: HelpCircleIcon, iconColor: "text-sky-500" },
-  { title: "Configurações", icon: Settings01Icon, iconColor: "text-muted-foreground" },
+  { id: "painel", title: "Painel Geral", icon: DashboardSquare01Icon, iconColor: "text-primary" },
+  { id: "whats", title: "Whats", icon: WhatsappIcon, iconColor: "text-emerald-500" },
+  { id: "calendario", title: "Calendário", icon: Calendar01Icon, iconColor: "text-orange-500" },
+  { id: "financeiro", title: "Financeiro", icon: Wallet01Icon, iconColor: "text-amber-500" },
+  { id: "crm", title: "CRM", icon: UserGroupIcon, iconColor: "text-cyan-500" },
+  { id: "config", title: "Configuração", icon: Settings01Icon, iconColor: "text-muted-foreground" },
 ];
 
 export function DashboardSidebar(
   props: React.ComponentProps<typeof Sidebar>
 ) {
+  const { activeTab, setActiveTab } = useDashboardStore();
   return (
     <Sidebar collapsible="offExamples" className="lg:border-r-0!" {...props}>
       <SidebarHeader className="px-3 py-4">
@@ -125,23 +117,21 @@ export function DashboardSidebar(
         <SidebarGroup className="p-0">
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    isActive={item.isActive}
-                    className="h-9"
-                    render={<Link href="#" />}
-                  >
-                    <HugeiconsIcon icon={item.icon} className={cn("size-4 shrink-0", item.iconColor)} />
-                    <span className="text-sm">{item.title}</span>
-                    {item.shortcut && (
-                      <span className="ml-auto flex size-5 items-center justify-center rounded bg-muted text-[10px] font-medium text-muted-foreground">
-                        {item.shortcut}
-                      </span>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                const active = activeTab === item.id;
+                return (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      isActive={active}
+                      className="h-9"
+                      onClick={() => setActiveTab(item.id)}
+                    >
+                      <HugeiconsIcon icon={item.icon} className={cn("size-4 shrink-0", item.iconColor)} />
+                      <span className="text-sm">{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

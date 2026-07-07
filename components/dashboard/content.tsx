@@ -7,7 +7,7 @@ import { welcomeSummary } from "@/mock-data/dashboard";
 import { StatsCards } from "./stats-cards";
 import { TodaysTasks } from "./todays-tasks";
 import { PerformanceChart } from "./performance-chart";
-import { ProjectsTable } from "./projects-table";
+import { AtendimentosList } from "./atendimentos-list";
 
 function WelcomeSection() {
   const { userName, tasksDueToday, overdueTasks, upcomingDeadlines } =
@@ -20,7 +20,7 @@ function WelcomeSection() {
           Bem-vindo de volta, {userName}! 👋
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          {tasksDueToday} tarefas para hoje, {overdueTasks} atrasadas,{" "}
+          {tasksDueToday} consultas para hoje, {overdueTasks} atrasadas,{" "}
           {upcomingDeadlines} prazos futuros (esta semana)
         </p>
       </div>
@@ -52,7 +52,7 @@ export function DashboardContent() {
           <PerformanceChart />
         </div>
       </div>
-      <ProjectsTable />
+      <AtendimentosList />
       </div>
     </main>
   );

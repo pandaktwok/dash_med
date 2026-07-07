@@ -1,20 +1,23 @@
 import { create } from "zustand";
-import type { ProjectStatus } from "@/mock-data/dashboard";
 
 interface DashboardStore {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
   tasksSearchQuery: string;
   tasksProjectFilter: string[];
   projectsSearchQuery: string;
-  projectStatusFilter: ProjectStatus | "all";
+  projectStatusFilter: string;
   setTasksSearchQuery: (query: string) => void;
   setTasksProjectFilter: (projectIds: string[]) => void;
   toggleTasksProjectFilter: (projectId: string) => void;
   setProjectsSearchQuery: (query: string) => void;
-  setProjectStatusFilter: (filter: ProjectStatus | "all") => void;
+  setProjectStatusFilter: (filter: string) => void;
   clearFilters: () => void;
 }
 
 export const useDashboardStore = create<DashboardStore>((set) => ({
+  activeTab: "painel",
+  setActiveTab: (tab) => set({ activeTab: tab }),
   tasksSearchQuery: "",
   tasksProjectFilter: [],
   projectsSearchQuery: "",
@@ -31,6 +34,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   setProjectStatusFilter: (filter) => set({ projectStatusFilter: filter }),
   clearFilters: () =>
     set({
+      activeTab: "painel",
       tasksSearchQuery: "",
       tasksProjectFilter: [],
       projectsSearchQuery: "",
