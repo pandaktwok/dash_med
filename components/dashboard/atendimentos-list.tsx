@@ -12,22 +12,11 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, FilterIcon, CircleIcon, Tick01Icon, Clock01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
-import { atendimentosPorDia, type AtendimentoStatus } from "@/mock-data/dashboard";
+import { Search01Icon, FilterIcon } from "@hugeicons/core-free-icons";
+import { atendimentosPorDia } from "@/mock-data/dashboard";
 import { useDashboardStore } from "@/store/dashboard-store";
 import { cn } from "@/lib/utils";
-
-const statusMeta: Record<
-  AtendimentoStatus,
-  { label: string; icon: typeof CircleIcon; className: string }
-> = {
-  confirmado: { label: "Confirmado", icon: CircleIcon, className: "text-cyan-600 dark:text-cyan-400" },
-  realizado: { label: "Realizado", icon: Tick01Icon, className: "text-emerald-600 dark:text-emerald-400" },
-  pendente: { label: "Pendente", icon: Clock01Icon, className: "text-amber-600 dark:text-amber-400" },
-  cancelado: { label: "Cancelado", icon: Cancel01Icon, className: "text-rose-600 dark:text-rose-400" },
-};
-
-const statusOptions = Object.keys(statusMeta) as AtendimentoStatus[];
+import { statusMeta, statusOptions } from "@/lib/status";
 
 export function AtendimentosList() {
   const {

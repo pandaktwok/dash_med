@@ -21,8 +21,8 @@ const typeMeta: Record<
   string,
   { label: string; icon: typeof ClinicIcon; color: string }
 > = {
-  consulta: { label: "Consulta", icon: ClinicIcon, color: "text-cyan-500" },
-  calendario: { label: "Calendário", icon: Calendar01Icon, color: "text-orange-500" },
+  consulta: { label: "Consulta", icon: ClinicIcon, color: "text-emerald-500" },
+  calendario: { label: "Calendário", icon: Calendar01Icon, color: "text-slate-500" },
 };
 
 export function TodaysTasks() {

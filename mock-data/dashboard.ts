@@ -41,7 +41,12 @@ export interface Atendimento {
   status: AtendimentoStatus;
 }
 
-export type AtendimentoStatus = "confirmado" | "realizado" | "cancelado" | "pendente";
+export type AtendimentoStatus =
+  | "confirmado"
+  | "realizado"
+  | "cancelado"
+  | "pendente"
+  | "retorno";
 
 export interface AtendimentoDia {
   dia: string;
@@ -64,6 +69,7 @@ export const atendimentosPorDia: AtendimentoDia[] = [
       { id: "a5", paciente: "Rosa F.", horario: "08:30", tipo: "Ginecologia", status: "confirmado" },
       { id: "a6", paciente: "Pedro G.", horario: "11:00", tipo: "Ortopedia", status: "pendente" },
       { id: "a7", paciente: "Lia R.", horario: "15:30", tipo: "Dermatologia", status: "confirmado" },
+      { id: "a10", paciente: "Beatriz T.", horario: "16:30", tipo: "Vascular", status: "retorno" },
     ],
   },
   {

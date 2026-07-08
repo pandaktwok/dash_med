@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useDashboardStore } from "@/store/dashboard-store";
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,7 +21,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -39,12 +37,12 @@ import {
 } from "@hugeicons/core-free-icons";
 
 const navItems = [
-  { id: "painel", title: "Painel Geral", icon: DashboardSquare01Icon, iconColor: "text-primary" },
-  { id: "whats", title: "Whats", icon: WhatsappIcon, iconColor: "text-emerald-500" },
-  { id: "calendario", title: "Calendário", icon: Calendar01Icon, iconColor: "text-orange-500" },
-  { id: "financeiro", title: "Financeiro", icon: Wallet01Icon, iconColor: "text-amber-500" },
-  { id: "crm", title: "CRM", icon: UserGroupIcon, iconColor: "text-cyan-500" },
-  { id: "config", title: "Configuração", icon: Settings01Icon, iconColor: "text-muted-foreground" },
+  { id: "painel", title: "Painel Geral", icon: DashboardSquare01Icon, iconColor: "text-primary", disabled: false },
+  { id: "whats", title: "Whats", icon: WhatsappIcon, iconColor: "text-emerald-500", disabled: false },
+  { id: "calendario", title: "Calendário", icon: Calendar01Icon, iconColor: "text-orange-500", disabled: false },
+  { id: "financeiro", title: "Financeiro", icon: Wallet01Icon, iconColor: "text-slate-400", disabled: true },
+  { id: "crm", title: "CRM", icon: UserGroupIcon, iconColor: "text-slate-400", disabled: true },
+  { id: "config", title: "Configuração", icon: Settings01Icon, iconColor: "text-muted-foreground", disabled: false },
 ];
 
 export function DashboardSidebar(
@@ -123,11 +121,19 @@ export function DashboardSidebar(
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       isActive={active}
-                      className="h-9"
-                      onClick={() => setActiveTab(item.id)}
+                      className={cn(
+                        "h-9",
+                        item.disabled && "cursor-not-allowed"
+                      )}
+                      onClick={() => {
+                        if (item.disabled) return;
+                        setActiveTab(item.id);
+                      }}
+                      aria-disabled={item.disabled}
+                      tabIndex={item.disabled ? -1 : undefined}
                     >
                       <HugeiconsIcon icon={item.icon} className={cn("size-4 shrink-0", item.iconColor)} />
-                      <span className="text-sm">{item.title}</span>
+                      <span className={cn("text-sm", item.disabled && "text-slate-400")}>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -137,32 +143,6 @@ export function DashboardSidebar(
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="px-2 pb-3 group-data-[collapsible=icon]:hidden">
-        <div className="group/sidebar relative flex flex-col gap-2 rounded-lg border p-4 text-sm w-full bg-background">
-          <div className="text-balance text-lg font-semibold leading-tight group-hover/sidebar:underline">
-            Layouts open-source por lndev-ui
-          </div>
-          <div className="text-muted-foreground">
-            Coleção de belos layouts de interface open-source construídos com shadcn/ui.
-          </div>
-          <Link
-            target="_blank"
-            rel="noreferrer"
-            className="absolute inset-0"
-            href="https://square.lndevui.com"
-          >
-            <span className="sr-only">Square by lndev-ui</span>
-          </Link>
-          <Link
-            href="https://square.lndevui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(buttonVariants({ size: "sm" }), "w-full")}
-          >
-            square.lndevui.com
-          </Link>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }
