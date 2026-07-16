@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Paciente {
+  id        String   @id @default(cuid())
+  nome      String
+  telefone  String
+  dadosExtra String?
+  
+  agendamentos Agendamento[]
+  conversas    Conversa[]
+  
+  criadoEm  DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Agendamento {
+  id         String   @id @default(cuid())
+  pacienteId String
+  paciente   Paciente @relation(fields: [pacienteId], references: [id])
+  
+  data       String
+  hora       String
+  status     String   @default("pendente")
+  
+  criadoEm  DateTime @default(now())
+}
+
+model Conversa {
+  id         String   @id @default(cuid())
+  pacienteId String
+  paciente   Paciente @relation(fields: [pacienteId], references: [id])
+  
+  etapa         String  @default("inicial")
+  subEtapa      String  @default("iniciado")
+  ultimaMensagem String?
+  iaPausada     Boolean @default(false)
+  
+  criadoEm  DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}

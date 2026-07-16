@@ -15,6 +15,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, FilterIcon } from "@hugeicons/core-free-icons";
 import { atendimentosPorDia } from "@/mock-data/dashboard";
 import { useDashboardStore } from "@/store/dashboard-store";
+import { useProntuarioStore } from "@/store/prontuario-store";
 import { cn } from "@/lib/utils";
 import { statusMeta, statusOptions } from "@/lib/status";
 
@@ -25,6 +26,7 @@ export function AtendimentosList() {
     projectStatusFilter,
     setProjectStatusFilter,
   } = useDashboardStore();
+  const openByConsulta = useProntuarioStore((s) => s.openByConsulta);
 
   const filteredDias = useMemo(() => {
     const q = projectsSearchQuery.trim().toLowerCase();
@@ -54,15 +56,16 @@ export function AtendimentosList() {
             <HugeiconsIcon icon={Search01Icon} className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               placeholder="Buscar..."
+              aria-label="Buscar atendimentos"
               value={projectsSearchQuery}
               onChange={(e) => setProjectsSearchQuery(e.target.value)}
-              className="pl-8 h-9 w-full sm:w-[200px] text-sm bg-muted/50"
+              className="pl-8 h-11 sm:h-9 min-h-[44px] sm:min-h-0 w-full sm:w-[200px] text-sm bg-muted/50"
             />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <Button variant="outline" size="sm" className="h-9 gap-1.5">
+                <Button variant="outline" size="sm" className="h-11 sm:h-9 min-h-[44px] sm:min-h-0 gap-1.5">
                   <HugeiconsIcon icon={FilterIcon} className="size-4" />
                   Filtrar
                   {hasActiveFilters && (
@@ -103,8 +106,14 @@ export function AtendimentosList() {
 
       <div className="p-4">
         {totalItens === 0 ? (
-          <div className="py-8 text-center text-sm text-muted-foreground">
-            Nenhum atendimento encontrado.
+          <div className="py-12 flex flex-col items-center justify-center text-center">
+            <div className="size-12 rounded-full bg-muted flex items-center justify-center mb-4">
+              <HugeiconsIcon icon={Search01Icon} className="size-6 text-muted-foreground" />
+            </div>
+            <p className="text-base font-medium text-foreground">Nenhum atendimento encontrado</p>
+            <p className="text-sm text-muted-foreground mt-1 max-w-[250px]">
+              Tente alterar os filtros ou o termo de busca para encontrar o que precisa.
+            </p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -123,9 +132,11 @@ export function AtendimentosList() {
                     {dia.itens.map((a) => {
                       const meta = statusMeta[a.status];
                       return (
-                        <div
+                        <button
                           key={a.id}
-                          className="flex flex-wrap items-center gap-3 px-4 py-2.5 hover:bg-muted/30 transition-colors"
+                          type="button"
+                          onClick={() => openByConsulta(a.paciente)}
+                          className="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors cursor-pointer w-full text-left"
                         >
                           <span className="text-sm font-medium tabular-nums w-12">
                             {a.horario}
@@ -138,7 +149,7 @@ export function AtendimentosList() {
                             <HugeiconsIcon icon={meta.icon} className="size-3.5" />
                             <span className="text-xs">{meta.label}</span>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>

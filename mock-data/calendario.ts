@@ -88,10 +88,13 @@ export const clientesCatalogo: ClienteCatalogo[] = (() => {
   for (const dia of atendimentosPorDia) {
     for (const a of dia.itens) {
       if (!map.has(a.paciente)) {
+        // Telefone derivado do índice, não de Math.random(): em module scope o
+        // random gerava um número novo a cada reload e divergiria entre server e
+        // client se o módulo fosse avaliado nos dois.
         map.set(a.paciente, {
           nome: a.paciente,
           especialidade: a.tipo,
-          telefone: "+55 11 9" + Math.floor(10000000 + Math.random() * 89999999),
+          telefone: `+55 11 9${87654321 + map.size * 1234}`,
         });
       }
     }

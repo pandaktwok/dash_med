@@ -25,11 +25,11 @@ function WelcomeSection() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="h-9 gap-1.5">
+        <Button variant="outline" size="sm" className="h-11 sm:h-9 min-h-[44px] sm:min-h-0 gap-1.5">
           <HugeiconsIcon icon={Download01Icon} className="size-4" />
           Exportar
         </Button>
-        <Button size="sm" className="h-9 gap-1.5 bg-primary hover:bg-primary/90">
+        <Button size="sm" className="h-11 sm:h-9 min-h-[44px] sm:min-h-0 gap-1.5 bg-primary hover:bg-primary/90">
           <HugeiconsIcon icon={Add01Icon} className="size-4" />
           Novo
         </Button>

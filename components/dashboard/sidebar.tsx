@@ -34,15 +34,17 @@ import {
   Tick01Icon,
   Add01Icon,
   UserIcon,
+  UserMultipleIcon,
 } from "@hugeicons/core-free-icons";
 
 const navItems = [
-  { id: "painel", title: "Painel Geral", icon: DashboardSquare01Icon, iconColor: "text-primary", disabled: false },
-  { id: "whats", title: "Whats", icon: WhatsappIcon, iconColor: "text-emerald-500", disabled: false },
-  { id: "calendario", title: "Calendário", icon: Calendar01Icon, iconColor: "text-orange-500", disabled: false },
+  { id: "painel", title: "Visão Geral", icon: DashboardSquare01Icon, iconColor: "text-primary", disabled: false },
+  { id: "whats", title: "Mensagens", icon: WhatsappIcon, iconColor: "text-emerald-500", disabled: false },
+  { id: "calendario", title: "Agenda", icon: Calendar01Icon, iconColor: "text-orange-500", disabled: false },
+  { id: "pacientes", title: "Pacientes", icon: UserMultipleIcon, iconColor: "text-sky-500", disabled: false },
   { id: "financeiro", title: "Financeiro", icon: Wallet01Icon, iconColor: "text-slate-400", disabled: true },
-  { id: "crm", title: "CRM", icon: UserGroupIcon, iconColor: "text-slate-400", disabled: true },
-  { id: "config", title: "Configuração", icon: Settings01Icon, iconColor: "text-muted-foreground", disabled: false },
+  { id: "crm", title: "Marketing", icon: UserGroupIcon, iconColor: "text-slate-400", disabled: true },
+  { id: "config", title: "Configurações", icon: Settings01Icon, iconColor: "text-muted-foreground", disabled: false },
 ];
 
 export function DashboardSidebar(
@@ -56,14 +58,14 @@ export function DashboardSidebar(
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex items-center gap-2 outline-none w-full justify-start">
-                  <div className="size-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground shrink-0">
+                <button className="flex items-center gap-3 outline-none w-full justify-start p-1.5 rounded-xl hover:bg-sidebar-accent transition-colors">
+                  <div className="size-9 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shrink-0 shadow-sm">
                     <span className="text-sm font-bold">T+</span>
                   </div>
-                  <span className="font-semibold text-sidebar-foreground truncate">
+                  <span className="text-base font-semibold text-sidebar-foreground truncate">
                     Taskplus
                   </span>
-                  <HugeiconsIcon icon={ArrowDown01Icon} className="size-3 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground shrink-0 ml-auto" />
                 </button>
               }
             />
@@ -114,15 +116,16 @@ export function DashboardSidebar(
       <SidebarContent className="px-2">
         <SidebarGroup className="p-0">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-2">
               {navItems.map((item) => {
                 const active = activeTab === item.id;
                 return (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
+                      size="lg"
                       isActive={active}
                       className={cn(
-                        "h-9",
+                        "text-base rounded-lg",
                         item.disabled && "cursor-not-allowed"
                       )}
                       onClick={() => {
@@ -132,8 +135,8 @@ export function DashboardSidebar(
                       aria-disabled={item.disabled}
                       tabIndex={item.disabled ? -1 : undefined}
                     >
-                      <HugeiconsIcon icon={item.icon} className={cn("size-4 shrink-0", item.iconColor)} />
-                      <span className={cn("text-sm", item.disabled && "text-slate-400")}>{item.title}</span>
+                      <HugeiconsIcon icon={item.icon} className={cn("size-5 shrink-0", item.iconColor)} />
+                      <span className={cn("text-base font-medium", item.disabled && "text-slate-400")}>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

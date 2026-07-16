@@ -39,3 +39,16 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+/lib/generated/prisma
+
+# banco local (gerado por `prisma db push` / `prisma migrate dev`)
+*.db
+*.db-journal
+
+# tooling de agente instalado localmente (nao faz parte do projeto)
+.claude/
+.agents/
+.codex/
+.gemini/
+.impeccable/

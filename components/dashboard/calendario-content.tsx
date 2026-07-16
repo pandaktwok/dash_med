@@ -22,6 +22,7 @@ import {
   Tick01Icon,
   Cancel01Icon,
   Clock01Icon,
+  ClipboardIcon,
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import {
@@ -32,6 +33,7 @@ import {
   horarioFim,
 } from "@/lib/status";
 import { useCalendarioStore } from "@/store/calendario-store";
+import { useProntuarioStore } from "@/store/prontuario-store";
 import {
   feriados,
   clientesCatalogo,
@@ -187,9 +189,15 @@ function BlocoCompromisso({
   const openCompromissoPopup = useCalendarioStore(
     (s) => s.openCompromissoPopup,
   );
+  const openByConsulta = useProntuarioStore((s) => s.openByConsulta);
 
   function handleOpen(e: MouseEvent) {
     e.stopPropagation();
+    // Consultas abrem diretamente o Prontuário Médico (modal expandido).
+    if (c.tipo === "consulta" && c.paciente) {
+      openByConsulta(c.paciente, c.id);
+      return;
+    }
     openCompromissoPopup(c.id);
   }
 
@@ -1113,6 +1121,7 @@ function CompromissoPopup() {
   const compromissos = useCalendarioStore((s) => s.compromissos);
   const updateCompromisso = useCalendarioStore((s) => s.updateCompromisso);
   const removeCompromisso = useCalendarioStore((s) => s.removeCompromisso);
+  const openByConsulta = useProntuarioStore((s) => s.openByConsulta);
 
   const c = useMemo(
     () => compromissos.find((x) => x.id === popupId) ?? null,
@@ -1421,6 +1430,19 @@ function CompromissoPopup() {
 
         {/* Footer */}
         <div className="flex items-center gap-2 p-4 border-t">
+          {c.tipo === "consulta" && c.paciente && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                openByConsulta(c.paciente!, c.id);
+                close();
+              }}
+              className="gap-1.5"
+            >
+              <HugeiconsIcon icon={ClipboardIcon} className="size-4" />
+              Ver prontuário
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={excluir}

@@ -80,10 +80,22 @@ export const legendaCores = [
     textClass: "text-blue-700 dark:text-blue-400",
   },
   {
+    key: "realizado",
+    label: "Realizado",
+    className: "bg-emerald-500",
+    textClass: "text-emerald-700 dark:text-emerald-400",
+  },
+  {
     key: "retorno",
     label: "Retorno",
     className: "bg-pink-500",
     textClass: "text-pink-700 dark:text-pink-400",
+  },
+  {
+    key: "pendente",
+    label: "Pendente",
+    className: "bg-amber-500",
+    textClass: "text-amber-700 dark:text-amber-400",
   },
   {
     key: "cancelado",

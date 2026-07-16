@@ -198,6 +198,11 @@ export function WhatsContent() {
       arr.map((c) => (c.id === id ? { ...c, iaPausada: true } : c))
     );
   };
+  const retomarIA = (id: string) => {
+    setInicial((arr) =>
+      arr.map((c) => (c.id === id ? { ...c, iaPausada: false } : c))
+    );
+  };
   const confirmarAg = (id: string) => {
     setAgendamento((arr) =>
       arr.map((c) => (c.id === id ? { ...c, confirmado: true } : c))
@@ -275,16 +280,35 @@ export function WhatsContent() {
                       )}
                     </div>
 
-                    <div className="mt-2 flex items-center gap-1.5">
+                    <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                      {!c.iaPausada ? (
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          className="gap-1"
+                          onClick={() => intervir(c.id)}
+                        >
+                          <HugeiconsIcon icon={HandPointingRight01Icon} className="size-3" />
+                          Intervir manualmente
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="default"
+                          size="xs"
+                          className="gap-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                          onClick={() => retomarIA(c.id)}
+                        >
+                          <HugeiconsIcon icon={Tick01Icon} className="size-3" />
+                          Retomar IA
+                        </Button>
+                      )}
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="xs"
-                        className="gap-1"
-                        disabled={c.iaPausada}
-                        onClick={() => intervir(c.id)}
+                        className="gap-1 ml-auto"
+                        onClick={() => console.log("Ver conversa", c.id)}
                       >
-                        <HugeiconsIcon icon={HandPointingRight01Icon} className="size-3" />
-                        Intervir manualmente
+                        Ver Conversa
                       </Button>
                     </div>
                   </CardShell>
